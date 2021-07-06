@@ -1,4 +1,5 @@
 const Transaction = require('../models/Transactions')
+const ErrorResponse = require ('../utils/errorResponse')
 
 // @desc        Create a transaction
 // @route      POST /api/v1/user-transactions
@@ -42,10 +43,7 @@ exports.getUserTransaction = async (req, res, next) =>{
         const transaction = await Transaction.findById(req.params.id)
 
         if(!transaction){
-            return res.status(400).json({
-                error: true,
-                message: `Transaction with ID ${req.params.id} not found.`
-            })
+            return next(new ErrorResponse(`Transaction with ID ${req.params.id} not found.`, 404))
         }
     
         res.status(200).json({
@@ -53,7 +51,7 @@ exports.getUserTransaction = async (req, res, next) =>{
             data: transaction
         })
        } catch (error) {
-           res.status(400).json({error: true})
+           next(new ErrorResponse(`Transaction with ID ${req.params.id} not found.`, 404))
        }
 }
 
