@@ -12,6 +12,7 @@ connectDB()
 
 //Route file 
 const transactions = require('./routes/transactions')
+const auth = require('./routes/auth')
 
 const app = express()
 
@@ -25,6 +26,7 @@ if(process.env.NODE_ENV==='development') {
 
 // Mount routes
 app.use('/api/v1/user-transactions', transactions)
+app.use('/api/v1/auth', auth)
 
 // Error handling middleware
 app.use(errorHandler)

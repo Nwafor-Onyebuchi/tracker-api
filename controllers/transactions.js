@@ -41,7 +41,7 @@ exports.getUserTransactions = async (req, res, next) =>{
 exports.getUserTransaction = async (req, res, next) =>{
     try {
         const transaction = await Transaction.findById(req.params.id)
-
+        // console.log(req.ip)
         if(!transaction){
             return next(new ErrorResponse(`Transaction with ID ${req.params.id} not found.`, 404))
         }
