@@ -77,5 +77,28 @@ exports.login = async (req, res, next) =>{
  
  }
 
+ // @desc        Register User
+// @route       POST /api/v1/auth/register
+// @access      Public
+exports.getAuthUser = async (req, res, next) =>{
+    try {
+
+        const user = await User.findById(req.user.id)
+
+        res.status(200).json({
+            error: false,
+            data: user
+        })
+
+        next()
+
+    } catch (error) {
+        console.log(error)
+        next( new ErrorResponse(`Server error`, 500))
+       
+    }
+ 
+ }
+
 
 

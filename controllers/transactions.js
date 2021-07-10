@@ -1,6 +1,7 @@
 const Transaction = require('../models/Transactions')
 const ErrorResponse = require ('../utils/errorResponse')
 
+
 // @desc        Create a transaction
 // @route      POST /api/v1/user-transactions
 // @access      Private
@@ -14,7 +15,8 @@ exports.createTransaction = async (req, res, next) =>{
         data: transaction
     })
    } catch (error) {
-       res.status(400).json({error: true})
+    next(new ErrorResponse(`Server error.`, 500))
+    
    }
 
 }
@@ -31,8 +33,8 @@ exports.getUserTransactions = async (req, res, next) =>{
             data: transaction,
         })
        } catch (error) {
-           res.status(400).json({error: true})
-       }
+        next(new ErrorResponse(`Server error.`, 500))
+           }
 }
 
 // @desc        Create a transaction
@@ -51,8 +53,8 @@ exports.getUserTransaction = async (req, res, next) =>{
             data: transaction
         })
        } catch (error) {
-           next(new ErrorResponse(`Transaction with ID ${req.params.id} not found.`, 404))
-       }
+        next(new ErrorResponse(`Server error.`, 500))      
+     }
 }
 
 // @desc        Update a transaction
@@ -77,8 +79,8 @@ exports.updateTransaction = async (req, res, next) =>{
             data: transaction
         })
        } catch (error) {
-           res.status(400).json({error: true})
-       }
+        next(new ErrorResponse(`Server error.`, 500))
+    }
 }
 
 // @desc        Delete a transaction
@@ -100,6 +102,6 @@ exports.deleteTransaction = async (req, res, next) =>{
             data: {}
         })
        } catch (error) {
-           res.status(400).json({error: true})
+        next(new ErrorResponse(`Server error.`, 500))
        }
 }

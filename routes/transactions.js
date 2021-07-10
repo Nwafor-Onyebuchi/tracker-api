@@ -1,15 +1,15 @@
 const express = require('express')
 const { getUserTransactions, getUserTransaction, createTransaction, updateTransaction, deleteTransaction} = require('../controllers/transactions')
-
+const {protectRoutes} = require('../middleware/auth')
 const router = express.Router()
 
 router.route('/')
-.get(getUserTransactions)
-.post(createTransaction)
+.get(protectRoutes, getUserTransactions)
+.post(protectRoutes, createTransaction)
 
 router.route('/:id')
-.get(getUserTransaction)
-.put(updateTransaction)
-.delete(deleteTransaction)
+.get(protectRoutes, getUserTransaction)
+.put(protectRoutes, updateTransaction)
+.delete(protectRoutes, deleteTransaction)
 
 module.exports = router
