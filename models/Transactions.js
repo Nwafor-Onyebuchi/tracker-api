@@ -18,6 +18,11 @@ const TransactionSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please send a transaction type']
     },
+    user: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+        required: true
+    },
     
     createdAt:{
         type: Date,

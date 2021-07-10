@@ -77,13 +77,45 @@ exports.login = async (req, res, next) =>{
  
  }
 
- // @desc        Register User
-// @route       POST /api/v1/auth/register
-// @access      Public
+ // @desc        GET logged in User
+// @route        GET /api/v1/auth/register
+// @access       Public
 exports.getAuthUser = async (req, res, next) =>{
     try {
 
         const user = await User.findById(req.user.id)
+
+        res.status(200).json({
+            error: false,
+            data: user
+        })
+
+        next()
+
+    } catch (error) {
+        console.log(error)
+        next( new ErrorResponse(`Server error`, 500))
+       
+    }
+ 
+ }
+
+  // @desc      Register User
+// @route       POST /api/v1/auth/register
+// @access      Public
+exports.forgotPassword = async (req, res, next) =>{
+    try {
+
+        const user = await User.findOne({email: req.body.email})
+
+        if(!user) {
+            return next (new ErrorResponse('Sorry, user does not exist.', 404))
+        }
+
+        const resetToken = user.getRestPasswordToken()
+        // console.log(resetToken)
+
+       await user.save({validateBeforSave: false})
 
         res.status(200).json({
             error: false,
