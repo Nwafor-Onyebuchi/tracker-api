@@ -1,6 +1,8 @@
+const crypto = require('crypto')
 const User = require('../models/User')
 const ErrorResponse = require ('../utils/errorResponse')
 const sendEmail = require('../utils/sendEmails')
+
 
 // @desc        Register User
 // @route       POST /api/v1/auth/register
@@ -80,7 +82,7 @@ exports.login = async (req, res, next) =>{
 
  // @desc        GET logged in User
 // @route        GET /api/v1/auth/register
-// @access       Public
+// @access       Private
 exports.getAuthUser = async (req, res, next) =>{
     try {
 
@@ -106,9 +108,7 @@ exports.getAuthUser = async (req, res, next) =>{
 // @access      Public
 exports.forgotPassword = async (req, res, next) =>{
     try {
-
         const user = await User.findOne({email: req.body.email})
-
         if(!user) {
             return next (new ErrorResponse('Sorry, user does not exist.', 404))
         }
@@ -153,6 +153,45 @@ exports.forgotPassword = async (req, res, next) =>{
     }
  
  }
+
+// @desc         reset password
+// @route        PUT /api/v1/auth/resetpassword
+// @access       Public
+exports.resetpassword = async (req, res, next) =>{
+    try {
+
+        const resetPasswordToken = crypto.createHash('sha256').update(req.params.resettoken).digest('hex')
+        
+        const user = await User.findOne({
+            resetPasswordToken, resetPasswordExpire: {$gt: Date.now()}
+        })
+
+        if(!user){
+            return next(new ErrorResponse(`Invalid token`, 404))
+        }
+        
+        // Set new password
+        user.password = req.body.password
+        user.resetPasswordExpire = undefined,
+        user.resetPasswordToken = undefined
+
+        await user.save()
+
+        res.status(200).json({
+            error: false,
+            data: user.getSignedJweToken()
+        })
+
+        next()
+
+    } catch (error) {
+        console.log(error)
+        next( new ErrorResponse(`Server error`, 500))
+       
+    }
+ 
+ }
+
 
 
 
